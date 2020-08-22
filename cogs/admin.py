@@ -28,6 +28,20 @@ class admin(commands.Cog):
             await commands.send_message(user, "Damn, I'm just a lowly bot but even I think you should have been banned :pensive:")
         except discord.Forbidden:
             await ctx.send("Could not ban user. Check my permissions.")
+   
+@client.command()
+@has_permissions(administrator = True)
+async def unban(ctx, *, member):
+    banned_users = await ctx.guild.bans()
+    member_name, member_discriminator = member.split('#')
+
+    for ban_entry in banned_users:
+        user = ban_entry.user
+
+        if (user.name, user.discriminator) == (member_name, member_discriminator):
+            await ctx.guild.unban(user)
+            await ctx.send(f'Unbanned {user.name}#(user.discriminator)')
+            return
     
     @commands.command()
     @commands.has_permissions(administrator=True)
